@@ -5,7 +5,7 @@ using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Repositories;
 
-public class RestaurantsesRepository(RestaurantDbContext dbContext) : IRestaurantsRepository
+public class RestaurantsRepository(RestaurantDbContext dbContext) : IRestaurantsRepository
 {
     public async Task<IEnumerable<Restaurant>> GetAllAsync()
     {
@@ -15,7 +15,14 @@ public class RestaurantsesRepository(RestaurantDbContext dbContext) : IRestauran
 
     public Task<Restaurant?> GetByIdAsync(int id)
     {
-        var restaurant = dbContext.Restaurants.FirstOrDefaultAsync(r => r.Id == id);
+        var restaurant = dbContext.Restaurants.Include(r => r.Dishes).FirstOrDefaultAsync(r => r.Id == id);
         return restaurant;
+    }
+    
+    public async Task<int> Create(Restaurant restaurant)
+    {
+        dbContext.Restaurants.Add(restaurant);
+        await dbContext.SaveChangesAsync();
+        return restaurant.Id;
     }
 }
