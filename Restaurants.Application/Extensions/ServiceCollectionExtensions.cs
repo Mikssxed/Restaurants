@@ -10,8 +10,8 @@ public static class ServiceCollectionExtensions
     public static void AddApplication(this IServiceCollection services)
     {
         var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
-        services.AddScoped<IRestaurantsService, RestaurantsService>();
-        services.AddAutoMapper(typeof(ServiceCollectionExtensions).Assembly);
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
+        services.AddAutoMapper(typeof(ServiceCollectionExtensions).Assembly);   
         services.AddValidatorsFromAssembly(applicationAssembly)
             .AddFluentValidationAutoValidation();
     }
