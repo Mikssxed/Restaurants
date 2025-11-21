@@ -10,7 +10,7 @@ public class CreteRestaurantCommandHandler(ILogger<CreateRestaurantCommand> logg
 {
     public async Task<int> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Creating a new restaurant");
+        logger.LogInformation("Creating a new restaurant {@Restaurant}",  request);
         var restaurant = mapper.Map<Restaurant>(request);
         
         var id = await restaurantsRepository.Create(restaurant);
