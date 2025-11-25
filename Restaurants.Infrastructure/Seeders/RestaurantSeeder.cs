@@ -1,4 +1,6 @@
-﻿using Restaurants.Domain.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using Restaurants.Domain.Constants;
+using Restaurants.Domain.Entities;
 using Restaurants.Infrastructure.Persistence;
 
 namespace Restaurants.Infrastructure.Seeders;
@@ -8,19 +10,47 @@ public class RestaurantSeeder(RestaurantDbContext dbContext) : IRestaurantSeeder
     public async Task Seed()
     {
         if (await dbContext.Database.CanConnectAsync())
-        {
             if (!dbContext.Restaurants.Any())
             {
                 var restaurants = GetRestaurants();
                 dbContext.Restaurants.AddRange(restaurants);
                 await dbContext.SaveChangesAsync();
             }
+
+        if (!dbContext.Roles.Any())
+        {
+            var roles = GetRoles();
+            dbContext.Roles.AddRange(roles);
+
+            await dbContext.SaveChangesAsync();
         }
+    }
+
+    private IEnumerable<IdentityRole> GetRoles()
+    {
+        List<IdentityRole> roles =
+        [
+            new(UserRoles.User)
+            {
+                NormalizedName = UserRoles.User.ToUpper()
+            },
+            new(UserRoles.Admin)
+            {
+                NormalizedName = UserRoles.Admin.ToUpper()
+            },
+            new(UserRoles.Owner)
+            {
+                NormalizedName = UserRoles.Owner.ToUpper()
+            }
+        ];
+
+        return roles;
     }
 
     private IEnumerable<Restaurant> GetRestaurants()
     {
-        List<Restaurant> restaurants = [
+        List<Restaurant> restaurants =
+        [
             new()
             {
                 Name = "KFC",
@@ -31,29 +61,28 @@ public class RestaurantSeeder(RestaurantDbContext dbContext) : IRestaurantSeeder
                 HasDelivery = true,
                 Dishes =
                 [
-                    new ()
+                    new Dish
                     {
                         Name = "Nashville Hot Chicken",
                         Description = "Nashville Hot Chicken (10 pcs.)",
-                        Price = 10.30M,
+                        Price = 10.30M
                     },
 
-                    new ()
+                    new Dish
                     {
                         Name = "Chicken Nuggets",
                         Description = "Chicken Nuggets (5 pcs.)",
-                        Price = 5.30M,
-                    },
+                        Price = 5.30M
+                    }
                 ],
-                Address = new ()
+                Address = new Address
                 {
                     City = "London",
                     Street = "Cork St 5",
                     PostalCode = "WC2N 5DU"
-                },
-                
+                }
             },
-            new ()
+            new()
             {
                 Name = "McDonald",
                 Category = "Fast Food",
@@ -61,7 +90,7 @@ public class RestaurantSeeder(RestaurantDbContext dbContext) : IRestaurantSeeder
                     "McDonald's Corporation (McDonald's), incorporated on December 21, 1964, operates and franchises McDonald's restaurants.",
                 ContactEmail = "contact@mcdonald.com",
                 HasDelivery = true,
-                Address = new Address()
+                Address = new Address
                 {
                     City = "London",
                     Street = "Boots 193",
@@ -69,7 +98,7 @@ public class RestaurantSeeder(RestaurantDbContext dbContext) : IRestaurantSeeder
                 }
             }
         ];
-        
+
         return restaurants;
     }
 }

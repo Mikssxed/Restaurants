@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Restaurants.Domain.Exceptions;
+﻿using Restaurants.Domain.Exceptions;
 
 namespace Restaurants.API.Middlewares;
 
@@ -15,8 +14,13 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
             await context.Response.WriteAsync(ex.Message);
-            
+
             logger.LogWarning(ex.Message);
+        }
+        catch (ForbidException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsync("You do not have permission to perform this action.");
         }
         catch (Exception ex)
         {
