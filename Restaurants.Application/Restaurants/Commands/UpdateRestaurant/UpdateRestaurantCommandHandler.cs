@@ -10,7 +10,7 @@ using Restaurants.Domain.Repositories;
 namespace Restaurants.Application.Restaurants.Commands.UpdateRestaurant;
 
 public class UpdateRestaurantCommandHandler(
-    ILogger<UpdateRestaurantCommand> logger,
+    ILogger<UpdateRestaurantCommandHandler> logger,
     IMapper mapper,
     IRestaurantsRepository restaurantsRepository,
     IRestaurantAuthorizationService restaurantAuthorizationService) : IRequestHandler<UpdateRestaurantCommand>
