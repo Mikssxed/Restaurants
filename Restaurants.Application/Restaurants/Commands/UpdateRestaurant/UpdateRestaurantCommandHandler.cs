@@ -21,6 +21,7 @@ public class UpdateRestaurantCommandHandler(
         var restaurant = await restaurantsRepository.GetByIdAsync(request.Id);
         if (restaurant is null) throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
 
+
         if (!restaurantAuthorizationService.Authorize(restaurant, ResourceOperation.Update)) throw new ForbidException();
 
         mapper.Map(request, restaurant);
